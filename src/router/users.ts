@@ -9,3 +9,4 @@ export default (router: express.Router) => {
     router.put('/users/point/:id',isAuthenticated, isOwner,  updatePointByIdHandler)
 }
 
+//test
