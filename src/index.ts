@@ -6,10 +6,12 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import router from './router';
+import dotenv from 'dotenv';
+
 
 
 const app = express();
-
+dotenv.config();
 app.use(cors({credentials:true  })); 
 
 app.use(compression());
@@ -22,7 +24,7 @@ server.listen(8080, () => {
     console.log('Server started on port http://localhost:8080/');
     });
 
-const MONGO_URL= "mongodb+srv://ens491:5ufgYF39DFslSolD@cluster0.xjr2n2m.mongodb.net/?retryWrites=true&w=majority"
+const MONGO_URL= process.env.MONGO_URL;
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URL);
 mongoose.connection.on('error', (error: Error) => {

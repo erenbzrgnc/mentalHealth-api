@@ -20,6 +20,8 @@ const UserSchema = new mongoose.Schema({
     point: {type: Number, required:false},
     petType: {type: String, required:false},
     friendList: [FriendSchema],
+    emailConfirmed: {type: Boolean, required:false},
+    confirmationToken: {type: String, required: false}, 
 
 });
 
@@ -49,3 +51,6 @@ export const updatePetTypeById = (id: string, newPetType: string) => UserModel.f
 
 export const updateFriendListById = (id: string, newFriendList: Array<any>) => UserModel.findByIdAndUpdate(id, { friendList: newFriendList }, { new: true });
 
+export const getUserByConfirmationToken = (token: string) => {
+    return UserModel.findOne({ confirmationToken: token });
+};

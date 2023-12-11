@@ -8,3 +8,7 @@ export const authentication = (salt: string, password: string) =>
     .createHmac("sha256", [salt, password].join("/"))
     .update(SECRET)
     .digest("hex");
+export const generateConfirmationToken = () => {
+      return crypto.randomBytes(20).toString('hex');
+  };
+  
