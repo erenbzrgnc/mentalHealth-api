@@ -2,8 +2,12 @@ import mongoose from "mongoose";
 
 const FriendSchema = new mongoose.Schema({
     friendId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    email: { type: String },
     name: { type: String },
-    surname: { type: String }
+    surname: { type: String },
+    petType: { type: String },
+    point: { type: Number },
+
 });
 
 const UserSchema = new mongoose.Schema({
@@ -44,6 +48,10 @@ export const getPetTypeById = (id: string) => UserModel.findById(id).then(user =
 
 export const getFriendListById = (id: string) => UserModel.findById(id).then(user => user?.friendList);
 
+export const getUserByConfirmationToken = (token: string) => {
+    return UserModel.findOne({ confirmationToken: token });
+};
+
 // Update Functions
 export const updatePointById = (id: string, newPoint: number) => UserModel.findByIdAndUpdate(id, { point: newPoint }, { new: true });
 
@@ -51,6 +59,15 @@ export const updatePetTypeById = (id: string, newPetType: string) => UserModel.f
 
 export const updateFriendListById = (id: string, newFriendList: Array<any>) => UserModel.findByIdAndUpdate(id, { friendList: newFriendList }, { new: true });
 
-export const getUserByConfirmationToken = (token: string) => {
-    return UserModel.findOne({ confirmationToken: token });
+// Add Functions
+export const addFriendById = (userId: string, friendData: Record<string, any>) => {
+    return UserModel.findByIdAndUpdate(userId, { $push: { friendList: friendData } }, { new: true });
 };
+
+// Delete Functions
+export const removeFriendById = (userId: string, friendId: string) => {
+    return UserModel.findByIdAndUpdate(userId, { $pull: { friendList: { friendId } } }, { new: true });
+};
+
+
+
