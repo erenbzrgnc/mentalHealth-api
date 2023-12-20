@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
     },
     birthdate: {type: Date, required:false},
     point: {type: Number, required:false},
-    petType: {type: String, required:false},
+    petType: {type: String, required:false, default: 'Pikachu'},
     friendList: [FriendSchema],
     emailConfirmed: {type: Boolean, required:false},
     confirmationToken: {type: String, required: false}, 
