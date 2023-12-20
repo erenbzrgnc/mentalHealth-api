@@ -1,5 +1,5 @@
 import express from 'express';
-import {addFriendById, deleteUserById, getFriendListById, getUserById, getUsers, removeFriendById, updatePetTypeById, updatePointById, updateUserById}   from '../db/user';
+import {UserModel, addFriendById, deleteUserById, getFriendListById, getUserById, getUsers, removeFriendById, updatePetTypeById, updatePointById, updateUserById}   from '../db/user';
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
     try{
@@ -29,10 +29,18 @@ export const updatePetTypeByIdHandler = async (req: express.Request, res: expres
         const { id } = req.params;
         const { petType } = req.body;
 
+        // Update the petType of the user
         const updatedUser = await updatePetTypeById(id, petType);
         if (!updatedUser) {
             return res.status(404).send('User not found');
         }
+
+        // Find all users who have this user in their friendList and update the petType there
+        await UserModel.updateMany(
+            { "friendList.friendId": id },
+            { $set: { "friendList.$.petType": petType } }
+        );
+
         return res.json(updatedUser);
     } catch (err) {
         console.error('Error in updatePetTypeByIdHandler:', err);
@@ -42,18 +50,30 @@ export const updatePetTypeByIdHandler = async (req: express.Request, res: expres
 
 
 export const updatePointByIdHandler = async (req: express.Request, res: express.Response) => {
-    try{
-        const {id} = req.params;
-        const {point} = req.body;
+    try {
+        const { id } = req.params;
+        const { point } = req.body;
+
+        // Update the user's point
         const updatedUser = await updatePointById(id, point);
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+
+        // Find all users who have this user in their friendList and update the point there
+        await UserModel.updateMany(
+            { "friendList.friendId": id },
+            { $set: { "friendList.$.point": point } }
+        );
+
         return res.json(updatedUser);
-    }
-    catch(err){
+    } catch (err) {
         console.log(err);
         res.sendStatus(400);
     }
-}
-
+};
 
 
 export const addFriend = async (req: express.Request, res: express.Response) => {
